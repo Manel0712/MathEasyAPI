@@ -1,0 +1,276 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+        "title": "API MathEasy",
+        "description": "API per gestionar operacions i recursos de MathEasy amb Laravel i autenticació Bearer",
+        "version": "1.0"
+    },
+    "servers": [
+        {
+            "url": "http://matheasyapi.test/api",
+            "description": "Servidor local de desenvolupament"
+        }
+    ],
+    "paths": {
+        "/alumnes": {
+            "get": {
+                "tags": [
+                    "Alumnes"
+                ],
+                "summary": "Llistar tots els alumnes",
+                "description": "Retorna una llista amb tots els alumnes registrats",
+                "operationId": "136a14845978f96f58e89b302a2add0e",
+                "responses": {
+                    "200": {
+                        "description": "Llista d'alumnes",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/Alumne"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Usuari no autenticat"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "post": {
+                "tags": [
+                    "Alumnes"
+                ],
+                "summary": "Crear un nou alumne",
+                "description": "Crea un alumne nou amb les dades proporcionades",
+                "operationId": "f402569706d709e193d14dd37fabd227",
+                "requestBody": {
+                    "description": "Dades de l'alumne",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/AlumneInput"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Alumne creat correctament",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Alumne"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Dades no vàlides"
+                    },
+                    "401": {
+                        "description": "Usuari no autenticat"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/alumnes/{id}": {
+            "get": {
+                "tags": [
+                    "Alumnes"
+                ],
+                "summary": "Mostrar un alumne",
+                "description": "Retorna les dades d'un alumne específic pel seu ID",
+                "operationId": "9080ee90af4f7973038fd9b97d773847",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID de l'alumne",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "format": "int64"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Alumne trobat correctament",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Alumne"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Alumne no trobat"
+                    },
+                    "401": {
+                        "description": "Usuari no autenticat"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/loggin": {
+            "post": {
+                "tags": [
+                    "Alumnes"
+                ],
+                "summary": "Iniciar sessió d'un alumne",
+                "description": "Comprova el nom d'usuari i la contrasenya. Retorna les dades de l'alumne si és correcte.",
+                "operationId": "eed7e793b3ea10acda6b6bd66e2a2c56",
+                "requestBody": {
+                    "description": "Dades d'inici de sessió",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/LoginRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Usuari autenticat correctament",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Alumne"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Usuari i/o contrasenya incorrectes"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        }
+    },
+    "components": {
+        "schemas": {
+            "Alumne": {
+                "title": "Alumne",
+                "description": "Representa un alumne, heretat de Usuaris",
+                "properties": {
+                    "Nom": {
+                        "description": "Nom de l'usuari",
+                        "type": "string"
+                    },
+                    "Cognoms": {
+                        "description": "Cognoms de l'usuari",
+                        "type": "string"
+                    },
+                    "Password": {
+                        "description": "Password de l'usuari",
+                        "type": "string",
+                        "format": "password"
+                    },
+                    "Nom_Usuari": {
+                        "description": "Nom d'usuari dins del curs",
+                        "type": "string"
+                    },
+                    "Curs": {
+                        "description": "Curs de l'alumne",
+                        "type": "string"
+                    },
+                    "Experiencia": {
+                        "description": "Experiència de l'alumne",
+                        "type": "integer",
+                        "format": "int32"
+                    }
+                },
+                "type": "object"
+            },
+            "AlumneInput": {
+                "title": "Entrada Alumne",
+                "description": "Dades necessàries per crear/actualitzar un alumne",
+                "properties": {
+                    "Nom": {
+                        "description": "Nom de l'usuari",
+                        "type": "string"
+                    },
+                    "Cognoms": {
+                        "description": "Cognoms de l'usuari",
+                        "type": "string"
+                    },
+                    "Password": {
+                        "description": "Password de l'usuari",
+                        "type": "string",
+                        "format": "password"
+                    },
+                    "Nom_Usuari": {
+                        "description": "Nom d'usuari dins del curs",
+                        "type": "string"
+                    },
+                    "Curs": {
+                        "description": "Curs de l'alumne",
+                        "type": "string"
+                    },
+                    "Experiencia": {
+                        "description": "Experiència de l'alumne",
+                        "type": "integer",
+                        "format": "int32"
+                    }
+                },
+                "type": "object"
+            },
+            "LoginRequest": {
+                "title": "LoginRequest",
+                "description": "Dades necessàries per iniciar sessió",
+                "properties": {
+                    "Nom_Usuari": {
+                        "description": "Nom d'usuari de l'alumne",
+                        "type": "string"
+                    },
+                    "Password": {
+                        "description": "Contrasenya de l'alumne",
+                        "type": "string"
+                    }
+                },
+                "type": "object"
+            }
+        },
+        "securitySchemes": {
+            "bearerAuth": {
+                "type": "http",
+                "description": "Introduïu el token Bearer JWT per autenticar-vos",
+                "bearerFormat": "JWT",
+                "scheme": "bearer"
+            }
+        }
+    },
+    "tags": [
+        {
+            "name": "Alumnes",
+            "description": "Operacions relacionades amb els alumnes"
+        }
+    ]
+}
