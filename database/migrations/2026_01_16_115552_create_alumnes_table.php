@@ -16,6 +16,7 @@ return new class extends Migration
             $table->string("Nom");
             $table->string("Cognoms");
             $table->string("Password");
+            $table->string("ProfilePicturePath");
             $table->string("Nom_Usuari");
             $table->string("Curs");
             $table->integer("Experiencia");

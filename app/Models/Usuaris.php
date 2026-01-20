@@ -9,7 +9,8 @@ class Usuaris extends Model
     protected $common_fillable = [
         "Nom",
         "Cognoms",
-        "Password"
+        "Password",
+        "ProfilePicturePath"
     ];
 
     public function __construct(array $attributes = [])
