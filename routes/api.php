@@ -4,6 +4,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AlumneController;
 use App\Models\Alumne;
+use Laravel\Sanctum\PersonalAccessToken;
 
 Route::get('/user', function (Request $request) {
     return $request->user();
@@ -11,7 +12,8 @@ Route::get('/user', function (Request $request) {
 
 Route::get('alumnes', function (Request $request) {
     $token = $request->bearerToken();
-    if ($token) {
+    $accessToken = PersonalAccessToken::findToken($token);
+    if ($accessToken) {
         $alumneController = new AlumneController();
         return $alumneController->index();
     }
@@ -24,7 +26,8 @@ Route::get('alumnes', function (Request $request) {
 
 Route::post('alumnes', function (Request $request) {
     $token = $request->bearerToken();
-    if ($token) {
+    $accessToken = PersonalAccessToken::findToken($token);
+    if ($accessToken) {
         $alumneController = new AlumneController();
         return $alumneController->store($request);
     }
@@ -37,7 +40,8 @@ Route::post('alumnes', function (Request $request) {
 
 Route::get('alumnes/{alumne}', function (Request $request, Alumne $alumne) {
     $token = $request->bearerToken();
-    if ($token) {
+    $accessToken = PersonalAccessToken::findToken($token);
+    if ($accessToken) {
         $alumneController = new AlumneController();
         return $alumneController->show($alumne);
     }
@@ -50,7 +54,8 @@ Route::get('alumnes/{alumne}', function (Request $request, Alumne $alumne) {
 
 Route::post('loggin', function (Request $request) {
     $token = $request->bearerToken();
-    if ($token) {
+    $accessToken = PersonalAccessToken::findToken($token);
+    if ($accessToken) {
         $alumneController = new AlumneController();
         return $alumneController->loggin($request);
     }
@@ -60,6 +65,34 @@ Route::post('loggin', function (Request $request) {
         ], 401);
     }
 });
+
+Route::post('perfilImage', function (Request $request) {
+    $token = $request->bearerToken();
+    $accessToken = PersonalAccessToken::findToken($token);
+    if ($accessToken) {
+        $alumneController = new AlumneController();
+        return $alumneController->perfilImageUpload($request);
+    }
+    else {
+        return response()->json([
+            "Usuari no autenticat"
+        ], 401);
+    }
+});
+
+Route::get('perfilImage/{path}', function (Request $request, $path) {
+    $token = $request->bearerToken();
+    $accessToken = PersonalAccessToken::findToken($token);
+    if ($accessToken) {
+        $alumneController = new AlumneController();
+        return $alumneController->perfilImageDownload($path);
+    }
+    else {
+        return response()->json([
+            "Usuari no autenticat"
+        ], 401);
+    }
+})->where('path', '.*');
 
 /* API TOKEN */
 /* Ap3wO8b4mJzkap05MbNMzgtaBxqTUyYHuYbmQDxH7f9f5913 */

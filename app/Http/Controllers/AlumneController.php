@@ -6,6 +6,7 @@ use App\Models\Alumne;
 use Illuminate\Http\Request;
 use OpenApi\Attributes as OA;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Storage;
 
 #[OA\Tag(
     name: "Alumnes",
@@ -182,5 +183,40 @@ class AlumneController extends Controller
         else {
             return response()->json(["Usuari i/o contrasenya incorrectes"], 401);
         }
+    }
+
+    public function perfilImageUpload(Request $request) {
+        $request->validate([
+        'image' => 'required|string',
+        'extension' => 'required|string|in:jpg,jpeg,png'
+        ]);
+        $imageData = $request->image;
+        if (preg_match('/^data:image\/(\w+);base64,/', $imageData, $type)) {
+            $imageData = substr($imageData, strpos($imageData, ',') + 1);
+        }
+        $imageData = base64_decode($imageData);
+        if ($imageData === false) {
+            return response()->json(['message' => 'Base64 inválido'], 400);
+        }
+        $filename = Str::random(20) . '.' . $request->extension;
+        $path = storage_path("app/public/images/$filename");
+        file_put_contents($path, $imageData);
+        return response()->json([
+            'message' => 'Imagen subida correctamente',
+            'path' => "images/$filename"
+        ], 201);
+    }
+
+    public function perfilImageDownload($path) {
+        $fullPath = storage_path("app/public/$path");
+        if (!file_exists($fullPath)) {
+            return response()->json(['message' => 'Archivo no encontrado'], 404);
+        }
+        $imageData = file_get_contents($fullPath);
+        $base64 = base64_encode($imageData);
+        return response()->json([
+            'path' => $path,
+            'base64' => $base64
+        ]);
     }
 }
