@@ -80,19 +80,5 @@ Route::post('perfilImage', function (Request $request) {
     }
 });
 
-Route::get('perfilImage/{path}', function (Request $request, $path) {
-    $token = $request->bearerToken();
-    $accessToken = PersonalAccessToken::findToken($token);
-    if ($accessToken) {
-        $alumneController = new AlumneController();
-        return $alumneController->perfilImageDownload($path);
-    }
-    else {
-        return response()->json([
-            "Usuari no autenticat"
-        ], 401);
-    }
-})->where('path', '.*');
-
 /* API TOKEN */
 /* Ap3wO8b4mJzkap05MbNMzgtaBxqTUyYHuYbmQDxH7f9f5913 */

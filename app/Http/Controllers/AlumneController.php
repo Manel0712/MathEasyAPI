@@ -7,6 +7,8 @@ use Illuminate\Http\Request;
 use OpenApi\Attributes as OA;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Response;
+use Illuminate\Support\Str;
 
 #[OA\Tag(
     name: "Alumnes",
@@ -86,11 +88,12 @@ class AlumneController extends Controller
                 'Nom' => $request->Nom,
                 'Cognoms' => $request->Cognoms,
                 'Password' => $passwordHash,
+                'ProfilePicturePath' => $request->ProfilePicturePath,
                 'Nom_Usuari' => $request->Nom_Usuari,
                 'Curs' => $request->Curs,
                 'Experiencia' => $request->Experiencia,
             ]);
-            return response()->json($alumne, 201);
+            return response()->json([$alumne], 201);
         }
     }
 
@@ -187,8 +190,8 @@ class AlumneController extends Controller
 
     public function perfilImageUpload(Request $request) {
         $request->validate([
-        'image' => 'required|string',
-        'extension' => 'required|string|in:jpg,jpeg,png'
+            'image' => 'required|string',
+            'extension' => 'required|string|in:jpg,jpeg,png'
         ]);
         $imageData = $request->image;
         if (preg_match('/^data:image\/(\w+);base64,/', $imageData, $type)) {
@@ -205,18 +208,5 @@ class AlumneController extends Controller
             'message' => 'Imagen subida correctamente',
             'path' => "images/$filename"
         ], 201);
-    }
-
-    public function perfilImageDownload($path) {
-        $fullPath = storage_path("app/public/$path");
-        if (!file_exists($fullPath)) {
-            return response()->json(['message' => 'Archivo no encontrado'], 404);
-        }
-        $imageData = file_get_contents($fullPath);
-        $base64 = base64_encode($imageData);
-        return response()->json([
-            'path' => $path,
-            'base64' => $base64
-        ]);
     }
 }
