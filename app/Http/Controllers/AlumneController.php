@@ -84,6 +84,10 @@ class AlumneController extends Controller
         }
         else {
             $passwordHash = Hash::make($request->Password);
+            $experiencia = Experiencia::create([
+                'Nivell' => 0,
+                'Total_xp' => 0,
+            ]);
             $alumne = Alumne::create([
                 'Nom' => $request->Nom,
                 'Cognoms' => $request->Cognoms,
@@ -91,7 +95,7 @@ class AlumneController extends Controller
                 'ProfilePicturePath' => $request->ProfilePicturePath,
                 'Nom_Usuari' => $request->Nom_Usuari,
                 'Curs' => $request->Curs,
-                'Experiencia' => $request->Experiencia,
+                'Experiencia' => $experiencia->id,
             ]);
             return response()->json([$alumne], 201);
         }
@@ -142,9 +146,50 @@ class AlumneController extends Controller
     /**
      * Update the specified resource in storage.
      */
+    #[OA\Put(
+        path: "/alumnes/{id}",
+        tags: ["Alumnes"],
+        summary: "Actualitzar dades d'un alumne",
+        description: "Actualitza les dades personals d'un alumne autenticat.",
+        security: [["bearerAuth" => []]],
+        parameters: [
+            new OA\Parameter(
+                name: "id",
+                description: "ID de l'alumne",
+                in: "path",
+                required: true,
+                schema: new OA\Schema(type: "integer")
+            )
+        ],
+        requestBody: new OA\RequestBody(
+            required: true,
+            description: "Dades a actualitzar de l'alumne",
+            content: new OA\JsonContent(ref: "#/components/schemas/AlumneUpdateInput")
+        ),
+        responses: [
+            new OA\Response(
+                response: 200,
+                description: "Alumne actualitzat correctament",
+                content: new OA\JsonContent(ref: "#/components/schemas/Alumne")
+            ),
+            new OA\Response(
+                response: 401,
+                description: "No autenticat"
+            ),
+            new OA\Response(
+                response: 404,
+                description: "Alumne no trobat"
+            ),
+            new OA\Response(
+                response: 422,
+                description: "Dades no vàlides"
+            )
+        ]
+    )]
     public function update(Request $request, Alumne $alumne)
     {
-        //
+        $alumne->update($request->all());
+        return response()->json([$alumne], 200);
     }
 
     /**
@@ -201,6 +246,29 @@ class AlumneController extends Controller
         if ($imageData === false) {
             return response()->json(['message' => 'Base64 inválido'], 400);
         }
+        $filename = Str::random(20) . '.' . $request->extension;
+        $path = storage_path("app/public/images/$filename");
+        file_put_contents($path, $imageData);
+        return response()->json([
+            'message' => 'Imagen subida correctamente',
+            'path' => "images/$filename"
+        ], 201);
+    }
+
+    public function perfilImageEdit(Request $request) {
+        $request->validate([
+            'image' => 'required|string',
+            'extension' => 'required|string|in:jpg,jpeg,png'
+        ]);
+        $imageData = $request->image;
+        if (preg_match('/^data:image\/(\w+);base64,/', $imageData, $type)) {
+            $imageData = substr($imageData, strpos($imageData, ',') + 1);
+        }
+        $imageData = base64_decode($imageData);
+        if ($imageData === false) {
+            return response()->json(['message' => 'Base64 inválido'], 400);
+        }
+        Storage::disk('public')->delete($request->path);
         $filename = Str::random(20) . '.' . $request->extension;
         $path = storage_path("app/public/images/$filename");
         file_put_contents($path, $imageData);

@@ -19,7 +19,10 @@ return new class extends Migration
             $table->string("ProfilePicturePath");
             $table->string("Nom_Usuari");
             $table->string("Curs");
-            $table->integer("Experiencia");
+            $table->unsignedBigInteger("Experiencia_id");
+            $table->foreign('Experiencia_id')
+                ->references('id')
+                ->on('experiencias');
             $table->timestamps();
         });
     }

@@ -130,6 +130,62 @@
                         "bearerAuth": []
                     }
                 ]
+            },
+            "put": {
+                "tags": [
+                    "Alumnes"
+                ],
+                "summary": "Actualitzar dades d'un alumne",
+                "description": "Actualitza les dades personals d'un alumne autenticat.",
+                "operationId": "d090b6e280b0588cc1e834e7f425edb9",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID de l'alumne",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "description": "Dades a actualitzar de l'alumne",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/AlumneUpdateInput"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Alumne actualitzat correctament",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Alumne"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "No autenticat"
+                    },
+                    "404": {
+                        "description": "Alumne no trobat"
+                    },
+                    "422": {
+                        "description": "Dades no vàlides"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
             }
         },
         "/loggin": {
@@ -205,6 +261,11 @@
                         "description": "Experiència de l'alumne",
                         "type": "integer",
                         "format": "int32"
+                    },
+                    "ProfilePicturePath": {
+                        "description": "Imatge de perfil",
+                        "type": "string",
+                        "example": "images/avatar.jpg"
                     }
                 },
                 "type": "object"
@@ -238,6 +299,56 @@
                         "description": "Experiència de l'alumne",
                         "type": "integer",
                         "format": "int32"
+                    },
+                    "ProfilePicturePath": {
+                        "description": "Imatge de perfil",
+                        "type": "string",
+                        "example": "images/avatar.jpg"
+                    }
+                },
+                "type": "object"
+            },
+            "AlumneUpdateInput": {
+                "title": "Actualització Alumne",
+                "description": "Dades per actualitzar un alumne. Tots els camps són opcionals.",
+                "properties": {
+                    "Nom": {
+                        "description": "Nom de l'usuari",
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "Cognoms": {
+                        "description": "Cognoms de l'usuari",
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "Password": {
+                        "description": "Password de l'usuari",
+                        "type": "string",
+                        "format": "password",
+                        "nullable": true
+                    },
+                    "Nom_Usuari": {
+                        "description": "Nom d'usuari dins del curs",
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "Curs": {
+                        "description": "Curs de l'alumne",
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "Experiencia": {
+                        "description": "Experiència de l'alumne",
+                        "type": "integer",
+                        "format": "int32",
+                        "nullable": true
+                    },
+                    "ProfilePicturePath": {
+                        "description": "Imatge de perfil",
+                        "type": "string",
+                        "example": "images/avatar.jpg",
+                        "nullable": true
                     }
                 },
                 "type": "object"

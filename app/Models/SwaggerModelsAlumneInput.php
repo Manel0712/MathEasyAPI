@@ -28,4 +28,7 @@ class SwaggerModelsAlumneInput
 
     #[OA\Property(type: "integer", format: "int32", description: "Experiència de l'alumne")]
     public string $Experiencia;
+
+    #[OA\Property(type: "string", description: "Imatge de perfil", example: "images/avatar.jpg")]
+    public string $ProfilePicturePath;
 }
