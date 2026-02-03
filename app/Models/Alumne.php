@@ -13,6 +13,7 @@ class Alumne extends Usuaris
         "Nom_Usuari",
         "Curs",
         "Experiencia",
+        "Nivell",
     ];
 
     public function informes() {
@@ -21,6 +22,6 @@ class Alumne extends Usuaris
 
     public function experiencia()
     {
-        return $this->hasOne(Experiencia::class, 'id', 'experiencia_id');
+        return $this->hasOne(Experiencia::class, 'id', 'Experiencia');
     }
 }

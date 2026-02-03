@@ -13,10 +13,10 @@ return new class extends Migration
     {
         Schema::create('informes', function (Blueprint $table) {
             $table->id();
-            $table->string("tipus_partida");
-            $table->integer("respostes_correctes");
-            $table->integer("respostes_incorrectes");
-            $table->integer("experiencia");
+            $table->string("Tipus_partida");
+            $table->integer("Respostes_correctes");
+            $table->integer("Respostes_incorrectes");
+            $table->integer("Experiencia");
             $table->unsignedBigInteger("alumne_id");
             $table->foreign('alumne_id')
                 ->references('id')

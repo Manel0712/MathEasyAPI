@@ -48,4 +48,9 @@ class InformeController extends Controller
     {
         //
     }
+
+    public function informesAlumne($alumne) {
+        $informes = Informe::Where('alumne_id', $alumne)->get();
+        return response()->json($informes, 200);
+    }
 }

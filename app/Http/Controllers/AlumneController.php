@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Alumne;
+use App\Models\Experiencia;
 use Illuminate\Http\Request;
 use OpenApi\Attributes as OA;
 use Illuminate\Support\Facades\Hash;
@@ -87,6 +88,7 @@ class AlumneController extends Controller
             $experiencia = Experiencia::create([
                 'Nivell' => 0,
                 'Total_xp' => 0,
+                'Medalles' => 0,
             ]);
             $alumne = Alumne::create([
                 'Nom' => $request->Nom,
@@ -96,6 +98,7 @@ class AlumneController extends Controller
                 'Nom_Usuari' => $request->Nom_Usuari,
                 'Curs' => $request->Curs,
                 'Experiencia' => $experiencia->id,
+                'Nivell' => 0,
             ]);
             return response()->json([$alumne], 201);
         }
@@ -224,7 +227,7 @@ class AlumneController extends Controller
         ]
     )]
     public function loggin(Request $request) {
-        $alumne = Alumne::where('Nom_Usuari', $request->Nom_Usuari)->first();
+        $alumne = Alumne::where('Nom_Usuari', $request->Nom_Usuari)->with('experiencia')->first();
         if ($alumne && Hash::check($request->Password, $alumne->Password)) {
             return response()->json([$alumne], 200);
         }
@@ -276,5 +279,14 @@ class AlumneController extends Controller
             'message' => 'Imagen subida correctamente',
             'path' => "images/$filename"
         ], 201);
+    }
+
+    public function experiencia(Experiencia $experiencia) {
+        return response()->json([$experiencia], 200);
+    }
+
+    public function experienciaUpdate(Request $request, Experiencia $experiencia) {
+        $experiencia->update($request->all());
+        return response()->json([$experiencia], 200);
     }
 }

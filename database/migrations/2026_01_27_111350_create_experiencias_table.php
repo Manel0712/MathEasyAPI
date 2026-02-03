@@ -13,8 +13,9 @@ return new class extends Migration
     {
         Schema::create('experiencias', function (Blueprint $table) {
             $table->id();
-            $table->integer("nivell");
-            $table->integer("xp_actual");
+            $table->integer("Nivell");
+            $table->integer("Total_xp");
+            $table->integer("Medalles");
             $table->timestamps();
         });
     }

@@ -3,8 +3,10 @@
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AlumneController;
+use App\Http\Controllers\InformeController;
 use App\Models\Alumne;
 use App\Models\Informe;
+use App\Models\Experiencia;
 use Laravel\Sanctum\PersonalAccessToken;
 
 Route::get('/user', function (Request $request) {
@@ -129,6 +131,48 @@ Route::post('informes', function (Request $request) {
     if ($accessToken) {
         $alumneController = new InformeController();
         return $alumneController->store($request);
+    }
+    else {
+        return response()->json([
+            "Usuari no autenticat"
+        ], 401);
+    }
+});
+
+Route::get('alumnes/experiencia/{experiencia}', function (Request $request, Experiencia $experiencia) {
+    $token = $request->bearerToken();
+    $accessToken = PersonalAccessToken::findToken($token);
+    if ($accessToken) {
+        $alumneController = new AlumneController();
+        return $alumneController->experiencia($experiencia);
+    }
+    else {
+        return response()->json([
+            "Usuari no autenticat"
+        ], 401);
+    }
+});
+
+Route::put('alumnes/experiencia/{experiencia}', function (Request $request, Experiencia $experiencia) {
+    $token = $request->bearerToken();
+    $accessToken = PersonalAccessToken::findToken($token);
+    if ($accessToken) {
+        $alumneController = new AlumneController();
+        return $alumneController->experienciaUpdate($request, $experiencia);
+    }
+    else {
+        return response()->json([
+            "Usuari no autenticat"
+        ], 401);
+    }
+});
+
+Route::get('informesAlumne/{alumne}', function (Request $request, $alumne) {
+    $token = $request->bearerToken();
+    $accessToken = PersonalAccessToken::findToken($token);
+    if ($accessToken) {
+        $alumneController = new InformeController();
+        return $alumneController->informesAlumne($alumne);
     }
     else {
         return response()->json([

@@ -23,6 +23,7 @@ return new class extends Migration
             $table->foreign('Experiencia_id')
                 ->references('id')
                 ->on('experiencias');
+            $table->integer("Nivell");
             $table->timestamps();
         });
     }

@@ -10,10 +10,11 @@ class Experiencia extends Model
     protected $fillable = [
         'Nivell',
         'Total_xp',
+        'Medalles',
     ];
 
     public function alumne()
     {
-        return $this->belongsTo(Alumne::class, 'experiencia_id');
+        return $this->belongsTo(Alumne::class, 'Experiencia');
     }
 }
