@@ -83,6 +83,20 @@ Route::post('loggin', function (Request $request) {
     }
 });
 
+Route::post('tokenLoggin', function (Request $request) {
+    $token = $request->bearerToken();
+    $accessToken = PersonalAccessToken::findToken($token);
+    if ($accessToken) {
+        $alumneController = new AlumneController();
+        return $alumneController->tokenLoggin($request);
+    }
+    else {
+        return response()->json([
+            "Usuari no autenticat"
+        ], 401);
+    }
+});
+
 Route::post('perfilImage', function (Request $request) {
     $token = $request->bearerToken();
     $accessToken = PersonalAccessToken::findToken($token);

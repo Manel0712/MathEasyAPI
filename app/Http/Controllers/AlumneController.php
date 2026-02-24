@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Response;
 use Illuminate\Support\Str;
+use Laravel\Sanctum\PersonalAccessToken;
 
 #[OA\Tag(
     name: "Alumnes",
@@ -100,7 +101,7 @@ class AlumneController extends Controller
                 'Experiencia' => $experiencia->id,
                 'Nivell' => 0,
             ]);
-            return response()->json([$alumne], 201);
+            return response()->json([$alumne->load('experiencia')], 201);
         }
     }
 
@@ -192,7 +193,7 @@ class AlumneController extends Controller
     public function update(Request $request, Alumne $alumne)
     {
         $alumne->update($request->all());
-        return response()->json([$alumne], 200);
+        return response()->json([$alumne->load('experiencia')], 200);
     }
 
     /**
@@ -229,11 +230,23 @@ class AlumneController extends Controller
     public function loggin(Request $request) {
         $alumne = Alumne::where('Nom_Usuari', $request->Nom_Usuari)->with('experiencia')->first();
         if ($alumne && Hash::check($request->Password, $alumne->Password)) {
-            return response()->json([$alumne], 200);
+            $token = $alumne->createToken("mobile_token")->plainTextToken;
+            return response()->json(["Resposta" => ["Alumne" => $alumne, "token" => $token]], 200);
         }
         else {
             return response()->json(["Usuari i/o contrasenya incorrectes"], 401);
         }
+    }
+
+    public function tokenLoggin(Request $request) {
+        $token = $request->token;
+        $user = PersonalAccessToken::findToken($token);
+        if (!$user) {
+            return response()->json(["message" => "Token inválido"], 401);
+        }
+        $alumne = $user->tokenable;
+        $alumne->load('experiencia');
+        return response()->json([$alumne], 200);
     }
 
     public function perfilImageUpload(Request $request) {
