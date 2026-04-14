@@ -11,6 +11,9 @@ use OpenApi\Attributes as OA;
 )]
 class SwaggerModelsAlumne
 {
+    #[OA\Property(type: "integer", description: "ID de l'alumne")]
+    public int $id;
+
     #[OA\Property(type: "string", description: "Nom de l'usuari")]
     public string $Nom;
 
@@ -27,7 +30,7 @@ class SwaggerModelsAlumne
     public string $Curs;
 
     #[OA\Property(type: "integer", format: "int32", description: "Experiència de l'alumne")]
-    public string $Experiencia;
+    public int $Experiencia;
 
     #[OA\Property(type: "string", description: "Imatge de perfil", example: "images/avatar.jpg")]
     public string $ProfilePicturePath;

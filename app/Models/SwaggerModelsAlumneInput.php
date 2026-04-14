@@ -7,7 +7,7 @@ use OpenApi\Attributes as OA;
 #[OA\Schema(
     schema: "AlumneInput",
     title: "Entrada Alumne",
-    description: "Dades necessàries per crear/actualitzar un alumne"
+    description: "Dades necessàries per crear un alumne"
 )]
 class SwaggerModelsAlumneInput
 {

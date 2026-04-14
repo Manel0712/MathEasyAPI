@@ -16,6 +16,7 @@ class Alumne extends Usuaris
 
     protected $fillable = [
         "Nom_Usuari",
+        "Email",
         "Curs",
         "Experiencia",
         "Nivell",
@@ -28,5 +29,10 @@ class Alumne extends Usuaris
     public function experiencia()
     {
         return $this->hasOne(Experiencia::class, 'id', 'Experiencia');
+    }
+
+    public function tascas()
+    {
+        return $this->belongsToMany(Tasca::class, 'alumne_tasca', 'Alumne', 'Tasca')->withPivot('id', 'Alumne', 'Tasca', 'Qualificacio', 'Estat_tramesa');
     }
 }

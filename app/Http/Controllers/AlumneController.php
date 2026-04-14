@@ -97,6 +97,7 @@ class AlumneController extends Controller
                 'Password' => $passwordHash,
                 'ProfilePicturePath' => $request->ProfilePicturePath,
                 'Nom_Usuari' => $request->Nom_Usuari,
+                'Email' => $request->Email,
                 'Curs' => $request->Curs,
                 'Experiencia' => $experiencia->id,
                 'Nivell' => 0,
@@ -219,7 +220,7 @@ class AlumneController extends Controller
             new OA\Response(
                 response: 200,
                 description: "Usuari autenticat correctament",
-                content: new OA\JsonContent(ref: "#/components/schemas/Alumne")
+                content: new OA\JsonContent(ref: "#/components/schemas/LoginResponse")
             ),
             new OA\Response(
                 response: 401,
@@ -238,6 +239,28 @@ class AlumneController extends Controller
         }
     }
 
+    #[OA\Post(
+        path: "/tokenLoggin",
+        tags: ["Alumnes"],
+        summary: "Validar token",
+        security: [["bearerAuth" => []]],
+        requestBody: new OA\RequestBody(
+            required: true,
+            content: new OA\JsonContent(
+                ref: "#/components/schemas/TokenLoginRequest"
+            )
+        ),
+        responses: [
+            new OA\Response(
+                response: 200,
+                description: "Token vàlid",
+                content: new OA\JsonContent(
+                    ref: "#/components/schemas/Alumne"
+                )
+            ),
+            new OA\Response(response: 401, description: "Token invàlid")
+        ]
+    )]
     public function tokenLoggin(Request $request) {
         $token = $request->token;
         $user = PersonalAccessToken::findToken($token);
@@ -248,7 +271,31 @@ class AlumneController extends Controller
         $alumne->load('experiencia');
         return response()->json([$alumne], 200);
     }
-
+    
+    #[OA\Post(
+        path: "/perfilImage",
+        tags: ["Alumnes"],
+        summary: "Pujar imatge de perfil",
+        security: [["bearerAuth" => []]],
+        requestBody: new OA\RequestBody(
+            required: true,
+            content: new OA\JsonContent(
+                ref: "#/components/schemas/ProfileImageUpload"
+            )
+        ),
+        responses: [
+            new OA\Response(
+                response: 201,
+                description: "Imatge pujada",
+                content: new OA\JsonContent(
+                    properties: [
+                        new OA\Property(property: "message", type: "string"),
+                        new OA\Property(property: "path", type: "string")
+                    ]
+                )
+            )
+        ]
+    )]
     public function perfilImageUpload(Request $request) {
         $request->validate([
             'image' => 'required|string',
@@ -271,6 +318,30 @@ class AlumneController extends Controller
         ], 201);
     }
 
+    #[OA\Post(
+        path: "/perfilImageEdit",
+        tags: ["Alumnes"],
+        summary: "Editar imatge de perfil",
+        security: [["bearerAuth" => []]],
+        requestBody: new OA\RequestBody(
+            required: true,
+            content: new OA\JsonContent(
+                ref: "#/components/schemas/ProfileImageEdit"
+            )
+        ),
+        responses: [
+            new OA\Response(
+                response: 200,
+                description: "Imatge actualitzada",
+                content: new OA\JsonContent(
+                    properties: [
+                        new OA\Property(property: "message", type: "string"),
+                        new OA\Property(property: "path", type: "string")
+                    ]
+                )
+            )
+        ]
+    )]
     public function perfilImageEdit(Request $request) {
         $request->validate([
             'image' => 'required|string',
@@ -294,10 +365,82 @@ class AlumneController extends Controller
         ], 201);
     }
 
+    #[OA\Get(
+        path: "/alumnes/experiencia/{id}",
+        tags: ["Alumnes"],
+        summary: "Obtenir experiència",
+        description: "Retorna dades d'experiència d'un alumne",
+        security: [["bearerAuth" => []]],
+        parameters: [
+            new OA\Parameter(
+                name: "id",
+                in: "path",
+                required: true,
+                schema: new OA\Schema(type: "integer")
+            )
+        ],
+        responses: [
+            new OA\Response(
+                response: 200,
+                description: "Experiència trobada",
+                content: new OA\JsonContent(
+                    ref: "#/components/schemas/Experiencia"
+                )
+            ),
+            new OA\Response(response: 404, description: "No trobada"),
+            new OA\Response(
+                response: 401,
+                description: "Usuari no autenticat"
+            )
+        ]
+    )]
     public function experiencia(Experiencia $experiencia) {
         return response()->json([$experiencia], 200);
     }
 
+    #[OA\Put(
+        path: "/alumnes/experiencia/{id}",
+        tags: ["Alumnes"],
+        summary: "Actualitzar experiència",
+        description: "Actualitza nivell, XP i medalles",
+        security: [["bearerAuth" => []]],
+        parameters: [
+            new OA\Parameter(
+                name: "id",
+                description: "ID de l'experiencia",
+                in: "path",
+                required: true,
+                schema: new OA\Schema(type: "integer")
+            )
+        ],
+        requestBody: new OA\RequestBody(
+            required: true,
+            content: new OA\JsonContent(
+                ref: "#/components/schemas/ExperienciaUpdateInput"
+            )
+        ),
+        responses: [
+            new OA\Response(
+                response: 200,
+                description: "Actualitzat correctament",
+                content: new OA\JsonContent(
+                    ref: "#/components/schemas/Experiencia"
+                )
+            ),
+            new OA\Response(
+                response: 401,
+                description: "No autenticat"
+            ),
+            new OA\Response(
+                response: 404,
+                description: "Alumne no trobat"
+            ),
+            new OA\Response(
+                response: 422,
+                description: "Dades no vàlides"
+            )
+        ]
+    )]
     public function experienciaUpdate(Request $request, Experiencia $experiencia) {
         $experiencia->update($request->all());
         return response()->json([$experiencia], 200);

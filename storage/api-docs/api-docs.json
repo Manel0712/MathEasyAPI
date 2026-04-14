@@ -7,7 +7,7 @@
     },
     "servers": [
         {
-            "url": "http://matheasyapi.test/api",
+            "url": "http://192.168.1.39:8000/api",
             "description": "Servidor local de desenvolupament"
         }
     ],
@@ -213,7 +213,7 @@
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "$ref": "#/components/schemas/Alumne"
+                                    "$ref": "#/components/schemas/LoginResponse"
                                 }
                             }
                         }
@@ -228,14 +228,487 @@
                     }
                 ]
             }
+        },
+        "/tokenLoggin": {
+            "post": {
+                "tags": [
+                    "Alumnes"
+                ],
+                "summary": "Validar token",
+                "operationId": "df7f3482c82eba4de12be93d284b8baa",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/TokenLoginRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Token vàlid",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Alumne"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Token invàlid"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/perfilImage": {
+            "post": {
+                "tags": [
+                    "Alumnes"
+                ],
+                "summary": "Pujar imatge de perfil",
+                "operationId": "4965a80c46031b213507fe005960509c",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/ProfileImageUpload"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Imatge pujada",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string"
+                                        },
+                                        "path": {
+                                            "type": "string"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/perfilImageEdit": {
+            "post": {
+                "tags": [
+                    "Alumnes"
+                ],
+                "summary": "Editar imatge de perfil",
+                "operationId": "b331dbb0973bde12ef495a85d840b8bb",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/ProfileImageEdit"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Imatge actualitzada",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string"
+                                        },
+                                        "path": {
+                                            "type": "string"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/alumnes/experiencia/{id}": {
+            "get": {
+                "tags": [
+                    "Alumnes"
+                ],
+                "summary": "Obtenir experiència",
+                "description": "Retorna dades d'experiència d'un alumne",
+                "operationId": "b012d53cd33bdbf8515f7f26b41c9d23",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Experiència trobada",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Experiencia"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "No trobada"
+                    },
+                    "401": {
+                        "description": "Usuari no autenticat"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "put": {
+                "tags": [
+                    "Alumnes"
+                ],
+                "summary": "Actualitzar experiència",
+                "description": "Actualitza nivell, XP i medalles",
+                "operationId": "4945977539b9bec25501429e3271be05",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID de l'experiencia",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/ExperienciaUpdateInput"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Actualitzat correctament",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Experiencia"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "No autenticat"
+                    },
+                    "404": {
+                        "description": "Alumne no trobat"
+                    },
+                    "422": {
+                        "description": "Dades no vàlides"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/informes": {
+            "get": {
+                "tags": [
+                    "Informes"
+                ],
+                "summary": "Llistar tots els informes",
+                "description": "Retorna una llista amb tots els informes creats",
+                "operationId": "427188f4b0e442f4d4a2bf1f2ff7c66f",
+                "responses": {
+                    "200": {
+                        "description": "Llista d'informes",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/Informe"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Usuari no autenticat"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "post": {
+                "tags": [
+                    "Informes"
+                ],
+                "summary": "Crear un nou informe",
+                "description": "Crea un informe amb les dades proporcionades",
+                "operationId": "5913480bd8bc3db0d68df030c3ea9bb2",
+                "requestBody": {
+                    "description": "Dades de l'informe",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/InformeInput"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Informe creat correctament",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Informe"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Dades no vàlides"
+                    },
+                    "401": {
+                        "description": "Usuari no autenticat"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/informesAlumne/{alumne}": {
+            "get": {
+                "tags": [
+                    "Informes"
+                ],
+                "summary": "Llistar tots els informes d'un alumne concret",
+                "description": "Retorna una llista amb tots els informes creats d'un alumne concret",
+                "operationId": "32de57bfe360d0c94eca3faf569c6683",
+                "parameters": [
+                    {
+                        "name": "alumne",
+                        "in": "path",
+                        "description": "ID de l'alumne",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "format": "int64"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Llista d'informes d'un alumne concret",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/Informe"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Alumne no trobat"
+                    },
+                    "401": {
+                        "description": "Usuari no autenticat"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/assignarOperacions": {
+            "post": {
+                "tags": [
+                    "Operacions"
+                ],
+                "summary": "Crear o reutilitzar una operació matemàtica i la assigna a una tasca",
+                "description": "Crea o reutilitza una operació matemàtica i la assigna a una tasca",
+                "operationId": "b6bd64d0e753362f01fec57d0ef30606",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "operacio",
+                                    "Tasca"
+                                ],
+                                "properties": {
+                                    "operacio": {
+                                        "description": "Tipus d'operació matemàtica (suma, resta, multiplicació...)",
+                                        "type": "string",
+                                        "example": "suma"
+                                    },
+                                    "Tasca": {
+                                        "description": "ID de la tasca",
+                                        "type": "integer",
+                                        "example": 3
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Operació assignada correctament",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/OperacioTasca"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Dades no vàlides"
+                    },
+                    "401": {
+                        "description": "Usuari no autenticat"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/professors": {
+            "post": {
+                "tags": [
+                    "Professors"
+                ],
+                "summary": "Crear un nou professor",
+                "description": "Crea un professor nou amb les dades proporcionades",
+                "operationId": "ae9c2e9a3dc3e4f81e747d4429ccb1cb",
+                "requestBody": {
+                    "description": "Dades de l'alumne",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/ProfessorInput"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Professor creat correctament",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Professor"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Dades no vàlides"
+                    },
+                    "401": {
+                        "description": "Usuari no autenticat"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
         }
     },
     "components": {
         "schemas": {
+            "LoginResponse": {
+                "title": "Login Response",
+                "properties": {
+                    "Resposta": {
+                        "properties": {
+                            "Alumne": {
+                                "$ref": "#/components/schemas/Alumne"
+                            },
+                            "token": {
+                                "type": "string",
+                                "example": "1|abc123token"
+                            }
+                        },
+                        "type": "object"
+                    }
+                },
+                "type": "object"
+            },
             "Alumne": {
                 "title": "Alumne",
                 "description": "Representa un alumne, heretat de Usuaris",
                 "properties": {
+                    "id": {
+                        "description": "ID de l'alumne",
+                        "type": "integer"
+                    },
                     "Nom": {
                         "description": "Nom de l'usuari",
                         "type": "string"
@@ -272,7 +745,7 @@
             },
             "AlumneInput": {
                 "title": "Entrada Alumne",
-                "description": "Dades necessàries per crear/actualitzar un alumne",
+                "description": "Dades necessàries per crear un alumne",
                 "properties": {
                     "Nom": {
                         "description": "Nom de l'usuari",
@@ -353,6 +826,106 @@
                 },
                 "type": "object"
             },
+            "Experiencia": {
+                "title": "Experiencia",
+                "description": "Progres de l'alumne",
+                "properties": {
+                    "id": {
+                        "description": "ID de l'experiència",
+                        "type": "integer"
+                    },
+                    "Nivell": {
+                        "description": "Nivell actual",
+                        "type": "integer"
+                    },
+                    "Total_xp": {
+                        "description": "Experiència total acumulada",
+                        "type": "integer"
+                    },
+                    "Medalles": {
+                        "description": "Nombre de medalles",
+                        "type": "integer"
+                    }
+                },
+                "type": "object"
+            },
+            "ExperienciaUpdateInput": {
+                "title": "Actualització Experiencia",
+                "description": "Progres de l'alumne",
+                "properties": {
+                    "Nivell": {
+                        "description": "Nivell actual",
+                        "type": "integer"
+                    },
+                    "Total_xp": {
+                        "description": "Experiència total acumulada",
+                        "type": "integer"
+                    },
+                    "Medalles": {
+                        "description": "Nombre de medalles",
+                        "type": "integer"
+                    }
+                },
+                "type": "object"
+            },
+            "Informe": {
+                "title": "Informe",
+                "description": "Representa un informe",
+                "properties": {
+                    "id": {
+                        "description": "ID de l'informe",
+                        "type": "integer"
+                    },
+                    "Tipus_partida": {
+                        "description": "Tipus de partida",
+                        "type": "string"
+                    },
+                    "Respostes_correctes": {
+                        "description": "Numero de respostes correctes",
+                        "type": "integer"
+                    },
+                    "Respostes_incorrectes": {
+                        "description": "Numero de respostes incorrectes",
+                        "type": "integer"
+                    },
+                    "Experiencia": {
+                        "description": "Experiencia obtinguda",
+                        "type": "integer"
+                    },
+                    "alumne_id": {
+                        "description": "ID de l'alumne",
+                        "type": "integer"
+                    }
+                },
+                "type": "object"
+            },
+            "InformeInput": {
+                "title": "Entrada Informe",
+                "description": "Dades necessàries per crear un informe",
+                "properties": {
+                    "Tipus_partida": {
+                        "description": "Tipus de partida",
+                        "type": "string"
+                    },
+                    "Respostes_correctes": {
+                        "description": "Numero de respostes correctes",
+                        "type": "integer"
+                    },
+                    "Respostes_incorrectes": {
+                        "description": "Numero de respostes incorrectes",
+                        "type": "integer"
+                    },
+                    "Experiencia": {
+                        "description": "Experiencia obtinguda",
+                        "type": "integer"
+                    },
+                    "alumne_id": {
+                        "description": "ID de l'alumne",
+                        "type": "integer"
+                    }
+                },
+                "type": "object"
+            },
             "LoginRequest": {
                 "title": "LoginRequest",
                 "description": "Dades necessàries per iniciar sessió",
@@ -364,6 +937,170 @@
                     "Password": {
                         "description": "Contrasenya de l'alumne",
                         "type": "string"
+                    }
+                },
+                "type": "object"
+            },
+            "Professor": {
+                "title": "Professor",
+                "description": "Representa un professor, heretat de Usuaris",
+                "properties": {
+                    "id": {
+                        "description": "ID del professor",
+                        "type": "integer"
+                    },
+                    "Nom": {
+                        "description": "Nom de l'usuari",
+                        "type": "string"
+                    },
+                    "Cognoms": {
+                        "description": "Cognoms de l'usuari",
+                        "type": "string"
+                    },
+                    "Password": {
+                        "description": "Password de l'usuari",
+                        "type": "string",
+                        "format": "password"
+                    },
+                    "Email": {
+                        "description": "Email del professor",
+                        "type": "string"
+                    },
+                    "Data_Naixement": {
+                        "description": "Data de naixement del professor",
+                        "type": "string",
+                        "format": "date"
+                    }
+                },
+                "type": "object"
+            },
+            "ProfessorInput": {
+                "title": "Entrada Professor",
+                "description": "Dades necessàries per crear un professor",
+                "properties": {
+                    "Nom": {
+                        "description": "Nom de l'usuari",
+                        "type": "string"
+                    },
+                    "Cognoms": {
+                        "description": "Cognoms de l'usuari",
+                        "type": "string"
+                    },
+                    "Password": {
+                        "description": "Password de l'usuari",
+                        "type": "string",
+                        "format": "password"
+                    },
+                    "Email": {
+                        "description": "Email del professor",
+                        "type": "string"
+                    },
+                    "Data_Naixement": {
+                        "description": "Data de naixement del professor",
+                        "type": "string",
+                        "format": "date"
+                    }
+                },
+                "type": "object"
+            },
+            "OperacioMatematica": {
+                "title": "Operació Matemàtica",
+                "description": "Representa una operació matemàtica (suma, resta, etc.)",
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "Operacio": {
+                        "description": "Operacio matemàtica",
+                        "type": "string"
+                    }
+                },
+                "type": "object"
+            },
+            "OperacioTasca": {
+                "title": "Operació-Tasca",
+                "description": "Relació entre operació matemàtica i tasca",
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "Operacio": {
+                        "type": "integer",
+                        "example": 2
+                    },
+                    "Tasca": {
+                        "type": "integer",
+                        "example": 5
+                    }
+                },
+                "type": "object"
+            },
+            "ProfileImageEdit": {
+                "title": "Profile Image Edit",
+                "description": "Dades per substituir la imatge de perfil existent",
+                "properties": {
+                    "image": {
+                        "description": "Nova imatge en base64",
+                        "type": "string",
+                        "format": "binary",
+                        "example": "data:image/jpeg;base64,..."
+                    },
+                    "extension": {
+                        "description": "Extensió de la nova imatge",
+                        "type": "string",
+                        "example": "jpg"
+                    },
+                    "path": {
+                        "description": "Ruta actual de la imatge a reemplaçar",
+                        "type": "string",
+                        "example": "images/avatar.png"
+                    }
+                },
+                "type": "object"
+            },
+            "ProfileImageUpload": {
+                "title": "Profile Image Upload",
+                "description": "Dades per pujar una imatge de perfil en base64",
+                "properties": {
+                    "image": {
+                        "description": "Imatge en base64 (data:image/...;base64,...)",
+                        "type": "string",
+                        "format": "binary",
+                        "example": "data:image/png;base64,iVBORw0KGgoAAA..."
+                    },
+                    "extension": {
+                        "description": "Extensió de la imatge",
+                        "type": "string",
+                        "example": "png"
+                    }
+                },
+                "type": "object"
+            },
+            "TokenLoginRequest": {
+                "title": "Token Login Request",
+                "description": "Petición para validar un token de acceso",
+                "properties": {
+                    "token": {
+                        "description": "Token de autenticación generado por Sanctum",
+                        "type": "string",
+                        "example": "1|abc123tokenxyz"
+                    }
+                },
+                "type": "object"
+            },
+            "TokenLoginResponse": {
+                "title": "Token Login Response",
+                "description": "Resposta del login amb token",
+                "properties": {
+                    "Alumne": {
+                        "$ref": "#/components/schemas/Alumne"
+                    },
+                    "token": {
+                        "description": "Token d'accés",
+                        "type": "string",
+                        "example": "1|abc123tokenxyz"
                     }
                 },
                 "type": "object"
@@ -382,6 +1119,18 @@
         {
             "name": "Alumnes",
             "description": "Operacions relacionades amb els alumnes"
+        },
+        {
+            "name": "Informes",
+            "description": "Operacions relacionades amb els informes"
+        },
+        {
+            "name": "Operacions",
+            "description": "Operacions relacionades amb les operacions matemàtiques"
+        },
+        {
+            "name": "Professors",
+            "description": "Operacions relacionades amb els professors"
         }
     ]
 }

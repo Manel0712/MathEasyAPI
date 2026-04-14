@@ -10,7 +10,7 @@ use OpenApi\Attributes as OA;
     description: "API per gestionar operacions i recursos de MathEasy amb Laravel i autenticació Bearer",
 )]
 #[OA\Server(
-    url: "http://matheasyapi.test/api",
+    url: "http://192.168.1.39:8000/api",
     description: "Servidor local de desenvolupament"
 )]
 #[OA\SecurityScheme(
