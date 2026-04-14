@@ -34,13 +34,13 @@ class ProfessorController extends Controller
         requestBody: new OA\RequestBody(
             required: true,
             description: "Dades de l'alumne",
-            content: new OA\JsonContent(ref: "App\Models\SwaggerModelsProfessorInput")
+            content: new OA\JsonContent(ref: "#/components/schemas/ProfessorInput")
         ),
         responses: [
             new OA\Response(
                 response: 201,
                 description: "Professor creat correctament",
-                content: new OA\JsonContent(ref: "App\Models\SwaggerModelsProfessor")
+                content: new OA\JsonContent(ref: "#/components/schemas/Professor")
             ),
             new OA\Response(
                 response: 400,
@@ -89,6 +89,29 @@ class ProfessorController extends Controller
         //
     }
 
+    #[OA\Post(
+        path: "/professorsLoggin",
+        tags: ["Professors"],
+        summary: "Iniciar sessió d'un professor",
+        description: "Comprova l'email i la contrasenya. Retorna les dades del professor si és correcte.",
+        security: [["bearerAuth" => []]],
+        requestBody: new OA\RequestBody(
+            required: true,
+            description: "Dades d'inici de sessió",
+            content: new OA\JsonContent(ref: "#/components/schemas/LoginProfessor")
+        ),
+        responses: [
+            new OA\Response(
+                response: 200,
+                description: "Usuari autenticat correctament",
+                content: new OA\JsonContent(ref: "#/components/schemas/Professor")
+            ),
+            new OA\Response(
+                response: 401,
+                description: "Usuari i/o contrasenya incorrectes"
+            )
+        ]
+    )]
     public function loggin(Request $request) {
         $professor = Professor::where('Email', $request->Email)->first();
         if ($professor && Hash::check($request->Password, $professor->Password)) {
